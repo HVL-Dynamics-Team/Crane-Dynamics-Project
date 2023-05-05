@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 
@@ -8,6 +9,10 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth / 2, window.innerHeight / 2 ); // Render the model at a quarter of the page size for now.
 document.body.appendChild( renderer.domElement );
+
+const controls = new OrbitControls( camera, renderer.domElement );
+controls.minDistance = 10;
+controls.maxDistance = 100;
 
 const geometry_box = new THREE.BoxGeometry( 1, 1, 1 );
 const material_box = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
@@ -40,10 +45,13 @@ scene.add( line_csysx );
 scene.add( line_csysy );
 scene.add( line_csysz );
 
-const loader = new GLTFLoader();
-loader.load( 'model/', function ( gltf ) {
-    scene.add( gltf.scene );
-} );
+var base = new THREE.Object3D();
+
+var body1 = new THREE.Object3D();
+
+var body2 = new THREE.Object3D();
+
+var body3 = new THREE.Object3D();
 
 camera.position.set( 5, 5, 5 ); // Sets camera position. z value must be higher so that scene and camera are not inside each other.
 camera.lookAt( 0, 0, 0 ); // Rotates the camera to face the origin.
@@ -51,6 +59,7 @@ camera.lookAt( 0, 0, 0 ); // Rotates the camera to face the origin.
 function animate()
 {
     requestAnimationFrame( animate );
+    controls.update();
     renderer.render( scene, camera );
 
     //cube.rotation.x += 0.01;
