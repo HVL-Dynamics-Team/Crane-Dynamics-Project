@@ -1,23 +1,19 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';  
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth / 2, window.innerHeight / 2 ); // Render the model at a quarter of the page size for now.
+renderer.setSize( window.innerWidth / 1.5, window.innerHeight / 1.5 ); // Render the model at a quarter of the page size for now.
 document.body.appendChild( renderer.domElement );
 
 const controls = new OrbitControls( camera, renderer.domElement );
-controls.minDistance = 10;
-controls.maxDistance = 100;
-
-const geometry_box = new THREE.BoxGeometry( 1, 1, 1 );
-const material_box = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-const cube = new THREE.Mesh( geometry_box, material_box );
+controls.minDistance = 100;
+controls.maxDistance = 1000;
 
 const material_csysx = new THREE.LineBasicMaterial( {color: 0xff0000} );
 const points_csysx = [];
@@ -41,20 +37,66 @@ const geometry_csysz = new THREE.BufferGeometry().setFromPoints( points_csysz );
 const line_csysz = new THREE.Line( geometry_csysz, material_csysz );
 
 renderer.setClearColor(0x0000ff, 0.4);
-scene.add( cube );
 scene.add( line_csysx );
 scene.add( line_csysy );
 scene.add( line_csysz );
 
-var base = new THREE.Object3D();
 
-var body1 = new THREE.Object3D();
+const mtl_loader = new MTLLoader();
+mtl_loader.load("./model/base.mtl", function (materials) {
+    materials.preload();
+    const obj_loader = new OBJLoader();
+    obj_loader.setMaterials(materials);
+    obj_loader.load("./model/base.obj", function (object) {
+        scene.add(object);
+    });
+});
 
-var body2 = new THREE.Object3D();
+mtl_loader.load("./model/body1.mtl", function (materials) {
+    materials.preload();
+    const obj_loader = new OBJLoader();
+    obj_loader.setMaterials(materials);
+    obj_loader.load("./model/body1.obj", function (object) {
+        object.position.y = 75;
+        scene.add(object);
+    });
+});
 
-var body3 = new THREE.Object3D();
+mtl_loader.load("./model/body2.mtl", function (materials) {
+    materials.preload();
+    const obj_loader = new OBJLoader();
+    obj_loader.setMaterials(materials);
+    obj_loader.load("./model/body2.obj", function (object) {
+        object.position.y = 300;
+        object.position.x = 70;
+        object.rotation.y = Math.PI / 2;
+        scene.add(object);
+    })
+});
 
-camera.position.set( 5, 5, 5 ); // Sets camera position. z value must be higher so that scene and camera are not inside each other.
+mtl_loader.load("./model/body3.mtl", function (materials) {
+    materials.preload();
+    const obj_loader = new OBJLoader();
+    obj_loader.setMaterials(materials);
+    obj_loader.load("./model/body3.obj", function (object) {
+        object.position.y = 300;
+        object.position.x = 40;
+        object.position.z = -120;
+        object.rotation.y = Math.PI / 2;
+        scene.add(object);
+    });
+});
+
+const pointLight = new THREE.PointLight(0xffffff);
+pointLight.position.set(1000, 1000, 1000);
+
+//const ambientLight = new THREE.AmbientLight(0xffffff);
+scene.add(pointLight);//, ambientLight);
+
+const lightHelper = new THREE.PointLightHelper(pointLight);
+const gridHelper = new THREE.GridHelper(2000, 500, -100);
+
+camera.position.set( 100, 100, 500 ); // Sets camera position. z value must be higher so that scene and camera are not inside each other.
 camera.lookAt( 0, 0, 0 ); // Rotates the camera to face the origin.
 
 function animate()
@@ -62,9 +104,6 @@ function animate()
     requestAnimationFrame( animate );
     controls.update();
     renderer.render( scene, camera );
-
-    //cube.rotation.x += 0.01;
-    //cube.rotation.y += 0.01;
 }
 
 // Check that WebGL is available for the browser and start animating the 3D model.
