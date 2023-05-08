@@ -64,7 +64,13 @@ scene.add( line_csysx );
 scene.add( line_csysy );
 scene.add( line_csysz );
 
+// Define 3D objects to store model parts in.
+const base = new THREE.Object3D();
+const body1 = new THREE.Object3D();
+const body2 = new THREE.Object3D();
+const body3 = new THREE.Object3D();
 
+// Load .obj model files and corresponding .mtl texture files.
 const mtl_loader = new MTLLoader();
 
 mtl_loader.load("./model/base.mtl", function (materials) {
@@ -72,7 +78,7 @@ mtl_loader.load("./model/base.mtl", function (materials) {
     const obj_loader = new OBJLoader();
     obj_loader.setMaterials(materials);
     obj_loader.load("./model/base.obj", function (object) {
-        scene.add(object);
+        base.add(object);
     });
 });
 
@@ -81,8 +87,7 @@ mtl_loader.load("./model/body1.mtl", function (materials) {
     const obj_loader = new OBJLoader();
     obj_loader.setMaterials(materials);
     obj_loader.load("./model/body1.obj", function (object) {
-        object.position.y = 75;
-        scene.add(object);
+        body1.add(object);
     });
 });
 
@@ -91,10 +96,7 @@ mtl_loader.load("./model/body2.mtl", function (materials) {
     const obj_loader = new OBJLoader();
     obj_loader.setMaterials(materials);
     obj_loader.load("./model/body2.obj", function (object) {
-        object.position.y = 300;
-        object.position.x = 70;
-        object.rotation.y = Math.PI / 2;
-        scene.add(object);
+        body2.add(object);
     })
 });
 
@@ -103,13 +105,29 @@ mtl_loader.load("./model/body3.mtl", function (materials) {
     const obj_loader = new OBJLoader();
     obj_loader.setMaterials(materials);
     obj_loader.load("./model/body3.obj", function (object) {
-        object.position.y = 300;
-        object.position.x = 40;
-        object.position.z = -120;
-        object.rotation.y = Math.PI / 2;
-        scene.add(object);
+        body3.add(object);
     });
 });
+
+// Attach parts to each other
+base.add(body1);
+body1.add(body2);
+body2.add(body3);
+
+// Set all the relative positions for the bodies.
+// Body 1
+body1.position.y = 75;
+// Body 2
+body2.position.y = 225;
+body2.rotation.y = Math.PI / 2;
+body2.rotation.z = Math.PI;
+body2.position.x = 70;
+// Body 3
+body3.position.x = 120;
+body3.position.z = -30;
+
+// Add parts to scene
+scene.add(base);
 
 
 function animate()
@@ -117,6 +135,32 @@ function animate()
     requestAnimationFrame( animate );
     controls.update();
     renderer.render( scene, camera );
+
+    rotate_body_1(0.0189);
+    rotate_body_2(0.025);
+    rotate_body_3(0.0132);
+}
+
+function rotate_body_1 (angle)
+{
+    body1.rotation.y += angle;
+}
+
+function rotate_body_2 (angle) 
+{
+    body2.rotation.z += angle;
+}
+
+function rotate_body_3 (angle)
+{
+    body3.rotation.z += angle;
+}
+
+function reset_positions()
+{
+    body1.rotation.y = 0;
+    body2.rotation.z = Math.PI;
+    body3.rotation.z = 0;
 }
 
 // Check that WebGL is available for the browser and start animating the 3D model.
