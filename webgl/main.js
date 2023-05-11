@@ -3,6 +3,33 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';  
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
+import * as RK from "./physics/Runge_Kutta";
+import * as RF from "./physics/Reaction_Forces";
+
+runge_kutta();
+for (let i = 0; i < time.length; i++)
+{
+    process.stdout.write(time[i]);
+    process.stdout.write("\t");
+    process.stdout.write(theta[i]);
+    process.stdout.write("\t");
+    process.stdout.write(phi[i]);
+    process.stdout.write("\t");
+    process.stdout.write(psi[i]);
+    process.stdout.write("\t");
+    process.stdout.write(thetad[i]);
+    process.stdout.write("\t");
+    process.stdout.write(phid[i]);
+    process.stdout.write("\t");
+    process.stdout.write(psid[i]);
+    process.stdout.write("\t");
+    process.stdout.write(thetadd[i]);
+    process.stdout.write("\t");
+    process.stdout.write(phidd[i]);
+    process.stdout.write("\t");
+    process.stdout.write(psidd[i]);
+    process.stdout.write("\n");
+}
 
 // Create the scene
 const scene = new THREE.Scene();
