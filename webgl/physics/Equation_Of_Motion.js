@@ -4,8 +4,6 @@ var T1 = 0;
 var T2 = 0;
 var T3 = 0;
 
-
-
 var m1 = 2;
 var m2 = 2;
 var m3 = 2;
@@ -21,6 +19,8 @@ var r1 = 0;
 var r2 = 0;
 var r3 = 0; 
 
+// We assume here that the tower and arms can all be considered cylinders, of course this may not hold in which case some other formula for mass moment of inertia should be used.
+// Any modern CAD software is also likely to give the mass moment of inertia about the axises and can also be inserted directly.
 var J11 = (1/12)* m1 * (3*(r1)**2 + (h + b)**2);
 var J12 = (1/12)* m1 * (3*(r1)**2 + (h + b)**2);
 var J13 = (1/2) * m1 *(r1**2);
@@ -70,22 +70,39 @@ function multiply_matrix(matrixA, matrixB)
 function get_N_star(theta, thetad, phi, phid, psi, psid)
 {
     let Ns = new Array();
+    let Ns0 = new Array();
+    let Ns1 = new Array();
+    let Ns2 = new Array();
     
     // First row
     let Ns00 = 2*J22*phid*Math.cos(phi)*Math.sin(phi) - m3*(a*Math.sin(theta) + c*Math.sin(theta) + (l2*Math.cos(phi + psi)*Math.cos(theta))/2 + l1*Math.cos(phi)*Math.cos(theta))*(l1*(phid*Math.cos(theta)*Math.sin(phi) + thetad*Math.cos(phi)*Math.sin(theta)) + (l2*(Math.sin(phi + psi)*Math.cos(theta)*(phid + psid) + thetad*Math.cos(phi + psi)*Math.sin(theta)))/2 - a*thetad*Math.cos(theta) - c*thetad*Math.cos(theta)) - m3*(a*Math.cos(theta) + c*Math.cos(theta) - (l2*Math.cos(phi + psi)*Math.sin(theta))/2 - l1*Math.cos(phi)*Math.sin(theta))*(l1*(thetad*Math.cos(phi)*Math.cos(theta) - phid*Math.sin(phi)*Math.sin(theta)) - (l2*(Math.sin(phi + psi)*Math.sin(theta)*(phid + psid) - thetad*Math.cos(phi + psi)*Math.cos(theta)))/2 + a*thetad*Math.sin(theta) + c*thetad*Math.sin(theta)) - m2*(a*Math.sin(theta) + (l1*Math.cos(phi)*Math.cos(theta))/2)*((l1*(phid*Math.cos(theta)*Math.sin(phi) + thetad*Math.cos(phi)*Math.sin(theta)))/2 - a*thetad*Math.cos(theta)) - m2*(a*Math.cos(theta) - (l1*Math.cos(phi)*Math.sin(theta))/2)*((l1*(thetad*Math.cos(phi)*Math.cos(theta) - phid*Math.sin(phi)*Math.sin(theta)))/2 + a*thetad*Math.sin(theta)) - 2*J23*phid*Math.cos(phi)*Math.sin(phi);
     let Ns01 = - m3*(l1*(phid*Math.cos(phi)*Math.sin(theta) + thetad*Math.cos(theta)*Math.sin(phi)) + (l2*(Math.cos(phi + psi)*Math.sin(theta)*(phid + psid) + thetad*Math.sin(phi + psi)*Math.cos(theta)))/2)*(a*Math.sin(theta) + c*Math.sin(theta) + (l2*Math.cos(phi + psi)*Math.cos(theta))/2 + l1*Math.cos(phi)*Math.cos(theta)) - m3*(l1*(phid*Math.cos(phi)*Math.cos(theta) - thetad*Math.sin(phi)*Math.sin(theta)) + (l2*(Math.cos(phi + psi)*Math.cos(theta)*(phid + psid) - thetad*Math.sin(phi + psi)*Math.sin(theta)))/2)*(a*Math.cos(theta) + c*Math.cos(theta) - (l2*Math.cos(phi + psi)*Math.sin(theta))/2 - l1*Math.cos(phi)*Math.sin(theta)) - (l1*m2*(phid*Math.cos(phi)*Math.sin(theta) + thetad*Math.cos(theta)*Math.sin(phi))*(a*Math.sin(theta) + (l1*Math.cos(phi)*Math.cos(theta))/2))/2 - (l1*m2*(phid*Math.cos(phid)*Math.cos(theta) - thetad*Math.sin(phi)*Math.sin(theta))*(a*Math.cos(theta) - (l1*Math.cos(phi)*Math.sin(theta))/2))/2;
     let Ns02 = - (l2*m3*(Math.cos(phi + psi)*Math.sin(theta)*(phid + psid) + thetad*Math.sin(phi + psi)*Math.cos(theta))*(a*Math.sin(theta) + c*Math.sin(theta) + (l2*Math.cos(phi + psi)*Math.cos(theta))/2 + l1*Math.cos(phi)*Math.cos(theta)))/2 - (l2*m3*(Math.cos(phi + psi)*Math.cos(theta)*(phid + psid) - thetad*Math.sin(phi + psi)*Math.sin(theta))*(a*Math.cos(theta) + c*Math.cos(theta) - (l2*Math.cos(phi + psi)*Math.sin(theta))/2 - l1*Math.cos(phi)*Math.sin(theta)))/2;
+    Ns0.push(Ns00);
+    Ns0.push(Ns01);
+    Ns0.push(Ns02);
 
     // Second row
     let Ns10 = m3*((l2*Math.sin(phi + psi)*Math.cos(theta))/2 + l1*Math.cos(theta)*Math.sin(phi))*(l1*(thetad*Math.cos(phi)*Math.cos(theta) - phid*Math.sin(phi)*Math.sin(theta)) - (l2*(Math.sin(phi + psi)*Math.sin(theta)*(phid + psid) - thetad*Math.cos(phi + psi)*Math.cos(theta)))/2 + a*thetad*Math.sin(theta) + c*thetad*Math.sin(theta)) + m3*((l2*Math.sin(phi + psi)*Math.sin(theta))/2 + l1*Math.sin(phi)*Math.sin(theta))*(l1*(phid*Math.cos(theta)*Math.sin(phi) + thetad*Math.cos(phi)*Math.sin(theta)) + (l2*(Math.sin(phi + psi)*Math.cos(theta)*(phid + psid) + thetad*Math.cos(phi + psi)*Math.sin(theta)))/2 - a*thetad*Math.cos(theta) - c*thetad*Math.cos(theta)) - J32*thetad*Math.cos(phi + psi)*Math.sin(phi + psi) + J33*thetad*Math.cos(phi + psi)*Math.sin(phi + psi) - J22*thetad*Math.cos(phi)*Math.sin(phi) + J23*thetad*Math.cos(phi)*Math.sin(phi) + (l1*m2*Math.cos(theta)*Math.sin(phi)*((l1*(thetad*Math.cos(phi)*Math.cos(theta) - phid*Math.sin(phi)*Math.sin(theta)))/2 + a*thetad*Math.sin(theta)))/2 + (l1*m2*Math.sin(phi)*Math.sin(theta)*((l1*(phid*Math.cos(theta)*Math.sin(phi) + thetad*Math.cos(phi)*Math.sin(theta)))/2 - a*thetad*Math.cos(theta)))/2;
     let Ns11 = m3*((l2*Math.sin(phi + psi)*Math.cos(theta))/2 + l1*Math.cos(theta)*Math.sin(phi))*(l1*(phid*Math.cos(phi)*Math.cos(theta) - thetad*Math.sin(phi)*Math.sin(theta)) + (l2*(Math.cos(phi + psi)*Math.cos(theta)*(phid + psid) - thetad*Math.sin(phi + psi)*Math.sin(theta)))/2) + m3*(l1*(phid*Math.cos(phi)*Math.sin(theta) + thetad*Math.cos(theta)*Math.sin(phi)) + (l2*(Math.cos(phi + psi)*Math.sin(theta)*(phid + psid) + thetad*Math.sin(phi + psi)*Math.cos(theta)))/2)*((l2*Math.sin(phi + psi)*Math.sin(theta))/2 + l1*Math.sin(phi)*Math.sin(theta)) - m3*(l1*Math.cos(phi) + (l2*Math.cos(phi))/2 - (l2*Math.sin(phi)*Math.sin(psi))/2)*((l2*(phid*Math.cos(phi)*Math.sin(psi) + psid*Math.cos(psi)*Math.sin(phi)))/2 + l1*phid*Math.sin(phi) + (l2*phid*Math.sin(phi))/2) - (l1**2*m2*phid*Math.cos(phi)*Math.sin(phi))/4 + (l1**2*m2*Math.cos(theta)*Math.sin(phi)*(phid*Math.cos(phid)*Math.cos(theta) - thetad*Math.sin(phi)*Math.sin(theta)))/4 + (l1**2*m2*Math.sin(phi)*Math.sin(theta)*(phid*Math.cos(phi)*Math.sin(theta) + thetad*Math.cos(theta)*Math.sin(phi)))/4;
     let Ns12 = (l2*m3*((l2*Math.sin(phi + psi)*Math.cos(theta))/2 + l1*Math.cos(theta)*Math.sin(phi))*(Math.cos(phi + psi)*Math.cos(theta)*(phid + psid) - thetad*Math.sin(phi + psi)*Math.sin(theta)))/2 + (l2*m3*((l2*Math.sin(phi + psi)*Math.sin(theta))/2 + l1*Math.sin(phi)*Math.sin(theta))*(Math.cos(phi + psi)*Math.sin(theta)*(phid + psid) + thetad*Math.sin(phi + psi)*Math.cos(theta)))/2 - (l2*m3*Math.sin(phi + psi)*(phid + psid)*(l1*Math.cos(phi) + (l2*Math.cos(phi))/2 - (l2*Math.sin(phi)*Math.sin(psi))/2))/2;
+    Ns1.push(Ns10);
+    Ns1.push(Ns11);
+    Ns1.push(Ns12);
 
     // Third row
     let Ns20 = J33*thetad*Math.cos(phi + psi)*Math.sin(phi + psi) - J32*thetad*Math.cos(phi + psi)*Math.sin(phi + psi) + (l2*m3*Math.sin(phi + psi)*Math.sin(theta)*(l1*(phid*Math.cos(theta)*Math.sin(phi) + thetad*Math.cos(phi)*Math.sin(theta)) + (l2*(Math.sin(phi + psi)*Math.cos(theta)*(phid + psid) + thetad*Math.cos(phi + psi)*Math.sin(theta)))/2 - a*thetad*Math.cos(theta) - c*thetad*Math.cos(theta)))/2 + (l2*m3*Math.sin(phi + psi)*Math.cos(theta)*(l1*(thetad*Math.cos(phi)*Math.cos(theta) - phid*Math.sin(phi)*Math.sin(theta)) - (l2*(Math.sin(phi + psi)*Math.sin(theta)*(phid + psid) - thetad*Math.cos(phi + psi)*Math.cos(theta)))/2 + a*thetad*Math.sin(theta) + c*thetad*Math.sin(theta)))/2;
     let Ns21 = (l2*m3*Math.sin(phi + psi)*Math.cos(theta)*(l1*(phid*Math.cos(phi)*Math.cos(theta) - thetad*Math.sin(phi)*Math.sin(theta)) + (l2*(Math.cos(phi + psi)*Math.cos(theta)*(phid + psid) - thetad*Math.sin(phi + psi)*Math.sin(theta)))/2))/2 - (l2*m3*Math.cos(phi + psi)*((l2*(phid*Math.cos(phi)*Math.sin(psi) + psid*Math.cos(psi)*Math.sin(phi)))/2 + l1*phid*Math.sin(phi) + (l2*phid*Math.sin(phi))/2))/2 + (l2*m3*Math.sin(phi + psi)*Math.sin(theta)*(l1*(phid*Math.cos(phi)*Math.sin(theta) + thetad*Math.cos(theta)*Math.sin(phi)) + (l2*(Math.cos(phi + psi)*Math.sin(theta)*(phid + psid) + thetad*Math.sin(phi + psi)*Math.cos(theta)))/2))/2;
     let Ns22 = (l2**2*m3*Math.sin(phi + psi)*Math.cos(theta)*(Math.cos(phi + psi)*Math.cos(theta)*(phid + psid) - thetad*Math.sin(phi + psi)*Math.sin(theta)))/4 + (l2**2*m3*Math.sin(phi + psi)*Math.sin(theta)*(Math.cos(phi + psi)*Math.sin(theta)*(phid + psid) + thetad*Math.sin(phi + psi)*Math.cos(theta)))/4 - (l2**2*m3*Math.cos(phi + psi)*Math.sin(phi + psi)*(phid + psid))/4;
+    Ns2.push(Ns20);
+    Ns2.push(Ns21);
+    Ns2.push(Ns22);
 
+    Ns.push(Ns0);
+    Ns.push(Ns1);
+    Ns.push(Ns2);
+
+    return Ns;
 }
 
 function get_M_star(theta, phi, psi)
@@ -127,10 +144,12 @@ function get_M_star(theta, phi, psi)
 
 function get_M_star_inverse()
 {
+    Ms_inv = new Array();
     Ms = get_M_star();
     determinant = ( Ms[0][0] * (Ms[1][1]*Ms[2][2] - Ms[1][2]*Ms[2][1]) - Ms[0][1] * (Ms[1][0]*Ms[2][2] - Ms[1][2]*Ms[2][0]) + Ms[0][2] * (Ms[1][0]*Ms[2][1] - Ms[1][1]*Ms[2][0]) );
 
-}
+    return Ms_inv;
+}   
 
 function get_F_star(theta, phi, psi)
 {
