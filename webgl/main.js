@@ -7,6 +7,7 @@ import * as RK from "./physics/Runge_Kutta";
 import * as RF from "./physics/Reaction_Forces";
 
 runge_kutta();
+process.stdout.write("Runge kutta. \n");
 for (let i = 0; i < time.length; i++)
 {
     process.stdout.write(time[i]);
