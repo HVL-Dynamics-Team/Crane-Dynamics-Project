@@ -195,19 +195,68 @@ function get_M_star_inverse()
     /**
      * Calculates and sets a new M-star-inverse.
      * M-star-inverse becomes a 3x3 matrix.
+     * 
+     * The inverse is found by first finding the M-star matrix (see function get_M_star), then finding the covariance matrix of M-star, 
+     * transposing it to get the adjugate-matrix and dividing each member of the adjugate matrix by the M-star's determinant yields the inverse M-star matrix.
      */
-    // TODO: finish inverse M-star function.
-    Ms_inv = new Array();
-    Ms = get_M_star();
+    
+    let Ms = get_M_star();
     determinant = ( Ms[0][0] * (Ms[1][1]*Ms[2][2] - Ms[1][2]*Ms[2][1]) - Ms[0][1] * (Ms[1][0]*Ms[2][2] - Ms[1][2]*Ms[2][0]) + Ms[0][2] * (Ms[1][0]*Ms[2][1] - Ms[1][1]*Ms[2][0]) );
 
+    // Define all members of the covariance matrix.
+    let cov_Ms00 = Ms[0][0] * (Ms[1][1] * Ms[2][2] - Ms[1][2] * Ms[2][1]);
+    let cov_Ms01 = Ms[0][1] * (Ms[1][0] * Ms[2][2] - Ms[1][2] * Ms[2][0]);
+    let cov_Ms02 = Ms[0][2] * (Ms[1][0] * Ms[2][1] - Ms[1][1] * Ms[2][0]);
+
+    let cov_Ms10 = Ms[1][0] * (Ms[0][1] * Ms[2][2] - Ms[0][2] * Ms[2][1]);
+    let cov_Ms11 = Ms[1][1] * (Ms[0][0] * Ms[2][2] - Ms[0][2] * Ms[2][0]);
+    let cov_Ms12 = Ms[1][2] * (Ms[0][0] * Ms[2][1] - Ms[0][1] * Ms[2][0]);
+
+    let cov_Ms20 = Ms[2][0] * (Ms[0][1] * Ms[1][2] - Ms[0][2] * Ms[1][1]);
+    let cov_Ms21 = Ms[2][1] * (Ms[0][0] * Ms[1][2] - Ms[0][2] * Ms[1][0]);
+    let cov_Ms22 = Ms[2][2] * (Ms[0][0] * Ms[1][1] - Ms[0][1] * Ms[1][0]);
+
+    // We don't need to build the covariance- or adjugate matrices, since we won't be using them and we have all the terms so we can build the inverse matrix right away.
+    let Ms_inv = new Array();
+    let Ms_inv0 = new Array();
+    let Ms_inv1 = new Array();
+    let Ms_inv2 = new Array();
+
+    let Ms_inv00 = cov_Ms00 / determinant;
+    let Ms_inv01 = cov_Ms10 / determinant;
+    let Ms_inv02 = cov_Ms20 / determinant;
+
+    let Ms_inv10 = cov_Ms01 / determinant;
+    let Ms_inv11 = cov_Ms11 / determinant;
+    let Ms_inv12 = cov_Ms21 / determinant;
+
+    let Ms_inv20 = cov_Ms02 / determinant;
+    let Ms_inv21 = cov_Ms12 / determinant;
+    let Ms_inv22 = cov_Ms22 / determinant;
+
+    Ms_inv0.push(Ms_inv00);
+    Ms_inv0.push(Ms_inv01);
+    Ms_inv0.push(Ms_inv02);
+
+    Ms_inv1.push(Ms_inv10);
+    Ms_inv1.push(Ms_inv11);
+    Ms_inv1.push(Ms_inv12);
+    
+    Ms_inv2.push(Ms_inv20);
+    Ms_inv2.push(Ms_inv21);
+    Ms_inv2.push(Ms_inv22);
+
+    Ms_inv.push(Ms_inv0);
+    Ms_inv.push(Ms_inv1);
+    Ms_inv.push(Ms_inv2);
+
     Mstar_inv = Ms_inv;
-}   
+}
 
 function get_F_star(theta, phi, psi)
 {
     /**
-     * Calculates and sets a new F-star from given theta, phi and psi.
+     * Calculates and sets a new F-star from given theta, phi and psi. (It turns out that here, theta is redundant but it is included as a input just for clarity, though this is not the best use of memory on the stack.)
      * Fstar becomes a 3x1 matrix.
      */
     let Fs = new Array();
