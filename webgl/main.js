@@ -3,34 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';  
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
-import * as RK from "./physics/Runge_Kutta";
-import * as RF from "./physics/Reaction_Forces";
-
-runge_kutta();
-process.stdout.write("Runge kutta. \n");
-for (let i = 0; i < time.length; i++)
-{
-    process.stdout.write(time[i]);
-    process.stdout.write("\t");
-    process.stdout.write(theta[i]);
-    process.stdout.write("\t");
-    process.stdout.write(phi[i]);
-    process.stdout.write("\t");
-    process.stdout.write(psi[i]);
-    process.stdout.write("\t");
-    process.stdout.write(thetad[i]);
-    process.stdout.write("\t");
-    process.stdout.write(phid[i]);
-    process.stdout.write("\t");
-    process.stdout.write(psid[i]);
-    process.stdout.write("\t");
-    process.stdout.write(thetadd[i]);
-    process.stdout.write("\t");
-    process.stdout.write(phidd[i]);
-    process.stdout.write("\t");
-    process.stdout.write(psidd[i]);
-    process.stdout.write("\n");
-}
+import  "./physics/Runge_Kutta";
+import  "./physics/Reaction_Forces";
 
 // Create the scene
 const scene = new THREE.Scene();
@@ -157,16 +131,25 @@ body3.position.z = -30;
 // Add parts to scene
 scene.add(base);
 
-
+var counter = 0;
 function animate()
 {
     requestAnimationFrame( animate );
     controls.update();
     renderer.render( scene, camera );
 
-    rotate_body_1(0.0189);
-    rotate_body_2(0.025);
-    rotate_body_3(0.0132);
+    if (counter < 10000) 
+    {
+        rotate_body_1(0.0189);
+        rotate_body_2(0.025);
+        rotate_body_3(0.0132);
+        counter += 1;
+    }
+    else 
+    {
+        reset_positions();
+        counter = 0;
+    }
 }
 
 function rotate_body_1 (angle)
