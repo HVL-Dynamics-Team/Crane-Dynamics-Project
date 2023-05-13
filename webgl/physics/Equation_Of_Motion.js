@@ -33,6 +33,11 @@ var J31 = (1/12)* m3 * (3*(r3)**2 + (l2)**2);
 var J32 = (1/2) * m3 *(r3**2);
 var J33 = (1/12)* m3 * (3*(r3)**2 + (l2)**2);
 
+var Mstar = new Array();
+var Mstar_inv = new Array();
+var Nstar = new Array();
+var Fstar = new Array();
+
 
 function get_Qd (th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
 {
@@ -41,6 +46,10 @@ function get_Qd (th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
      * Qd = Ms**-1 * (Fs - Ns * qd); 
      */
     let Qd = new Array();
+    get_M_star();
+    get_M_star_inverse();
+    get_N_star();
+    get_F_star();
     Qd.push(get_thetadd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr));
     Qd.push(get_phidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr));
     Qd.push(get_psidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr));
@@ -49,26 +58,61 @@ function get_Qd (th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
 
 function get_thetadd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
 {
-    
+    /**
+     * Gets the thetadd from the equation of motion with the current values.
+     * Becomes a single value.
+     */
+    return (Mstar_inv[0][0] * (Fstar[0] - (Nstar[0][0] * thd_curr + Nstar[0][1] * phd_curr + Nstar[0][2] * psd_curr)) + Mstar_inv[0][1] * (Fstar[1] - (Nstar[1][0] * thd_curr + Nstar[1][1] * phd_curr + Nstar[1][2] * psd_curr)) + Mstar_inv[0][2] * (Fstar[2] - (Nstar[2][0] * thd_curr + Nstar[2][1] * phd_curr + Nstar[2][2] * psd_curr)));
 }
 
 function get_phidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
 {
-
+    /**
+     * Gets the phidd from the equation of motion with the current values.
+     * Becomes a single value.
+     */
+    return (Mstar_inv[1][0] * (Fstar[0] - (Nstar[0][0] * thd_curr + Nstar[0][1] * phd_curr + Nstar[0][2] * psd_curr)) + Mstar_inv[1][1] * (Fstar[1] - (Nstar[1][0] * thd_curr + Nstar[1][1] * phd_curr + Nstar[1][2] * psd_curr)) + Mstar_inv[1][2] * (Fstar[2] - (Nstar[2][0] * thd_curr + Nstar[2][1] * phd_curr + Nstar[2][2] * psd_curr)));
 }
 
 function get_psidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
 {
-
+    /**
+     * Gets the psidd from the eqution of motion with the current values.
+     * Becomes a single value.
+     */
+    return (Mstar_inv[2][0] * (Fstar[0] - (Nstar[0][0] * thd_curr + Nstar[0][1] * phd_curr + Nstar[0][2] * psd_curr)) + Mstar_inv[2][1] * (Fstar[1] - (Nstar[1][0] * thd_curr + Nstar[1][1] * phd_curr + Nstar[1][2] * psd_curr)) + Mstar_inv[2][2] * (Fstar[2] - (Nstar[2][0] * thd_curr + Nstar[2][1] * phd_curr + Nstar[2][2] * psd_curr)));
 }
 
-function multiply_matrix(matrixA, matrixB)
+function multiply_matrices(matrixA, matrixB, rowsA, colsA, rowsB, colsB)
 {
+    /**
+     * Takes 2 matrices and multiplies them together, then returns the resulting matrix.
+     */
+    let result_matrix = new Array();
+    for (let i = 0; i < rowsA; i++)
+    {
+        let matrix_row = new Array();
 
+        for (let j = 0; j < colsB; j++)
+        {
+            let matrix_member = 0;
+            for (let k = 0; k < colsA; k++)
+            {
+                matrix_member += matrixA[i][k] * matrixB[j][i];
+            }
+            matrix_row.push(matrix_member);
+        }
+        result_matrix.push(matrix_row);
+    }
+    return result_matrix;
 }
 
 function get_N_star(theta, thetad, phi, phid, psi, psid)
 {
+    /**
+     * Calculates and sets a new N-star matrix from given theta, thetad, phi, phid, psi and psid.
+     * N-star becomes a 3x3 matrix.
+     */
     let Ns = new Array();
     let Ns0 = new Array();
     let Ns1 = new Array();
@@ -102,11 +146,15 @@ function get_N_star(theta, thetad, phi, phid, psi, psid)
     Ns.push(Ns1);
     Ns.push(Ns2);
 
-    return Ns;
+    Nstar = Ns;
 }
 
 function get_M_star(theta, phi, psi)
 {
+    /**
+     * Calculates and sets a new M-star matrix from given theta, tehtad, phi, phid, psi and psid.
+     * M-star becomes a 3x3 matrix.
+     */
     let Ms = new Array();
     let Ms0 = new Array();
     let Ms1 = new Array();
@@ -139,20 +187,29 @@ function get_M_star(theta, phi, psi)
     Ms.push(Ms1);
     Ms.push(Ms2);
 
-    return Ms;
+    Mstar = Ms;
 }
 
 function get_M_star_inverse()
 {
+    /**
+     * Calculates and sets a new M-star-inverse.
+     * M-star-inverse becomes a 3x3 matrix.
+     */
+    // TODO: finish inverse M-star function.
     Ms_inv = new Array();
     Ms = get_M_star();
     determinant = ( Ms[0][0] * (Ms[1][1]*Ms[2][2] - Ms[1][2]*Ms[2][1]) - Ms[0][1] * (Ms[1][0]*Ms[2][2] - Ms[1][2]*Ms[2][0]) + Ms[0][2] * (Ms[1][0]*Ms[2][1] - Ms[1][1]*Ms[2][0]) );
 
-    return Ms_inv;
+    Mstar_inv = Ms_inv;
 }   
 
 function get_F_star(theta, phi, psi)
 {
+    /**
+     * Calculates and sets a new F-star from given theta, phi and psi.
+     * Fstar becomes a 3x1 matrix.
+     */
     let Fs = new Array();
     let Fs1 = T1 - T2;
     let Fs2 = T2 - (g*m3)*(l1*Math.cos(phi) + (l2*Math.cos(phi))/2 - (l2*Math.sin(phi)*Math.sin(psi))/2) - (g*l1*m2*Math.cos(phi))/2;
@@ -160,5 +217,5 @@ function get_F_star(theta, phi, psi)
     Fs.push(Fs1);
     Fs.push(Fs2);
     Fs.push(Fs3);
-    return Fs;
+    Fstar = Fs;
 }
