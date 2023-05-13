@@ -50,13 +50,13 @@ function get_Qd (th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
     get_M_star_inverse();
     get_N_star();
     get_F_star();
-    Qd.push(get_thetadd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr));
-    Qd.push(get_phidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr));
-    Qd.push(get_psidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr));
+    Qd.push(get_thetadd(thd_curr, phd_curr, psd_curr));
+    Qd.push(get_phidd(thd_curr, phd_curr, psd_curr));
+    Qd.push(get_psidd(thd_curr, phd_curr, psd_curr));
     return Qd;
 }
 
-function get_thetadd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
+function get_thetadd(thd_curr, phd_curr, psd_curr)
 {
     /**
      * Gets the thetadd from the equation of motion with the current values.
@@ -65,7 +65,7 @@ function get_thetadd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
     return (Mstar_inv[0][0] * (Fstar[0] - (Nstar[0][0] * thd_curr + Nstar[0][1] * phd_curr + Nstar[0][2] * psd_curr)) + Mstar_inv[0][1] * (Fstar[1] - (Nstar[1][0] * thd_curr + Nstar[1][1] * phd_curr + Nstar[1][2] * psd_curr)) + Mstar_inv[0][2] * (Fstar[2] - (Nstar[2][0] * thd_curr + Nstar[2][1] * phd_curr + Nstar[2][2] * psd_curr)));
 }
 
-function get_phidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
+function get_phidd(thd_curr, phd_curr, psd_curr)
 {
     /**
      * Gets the phidd from the equation of motion with the current values.
@@ -74,7 +74,7 @@ function get_phidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
     return (Mstar_inv[1][0] * (Fstar[0] - (Nstar[0][0] * thd_curr + Nstar[0][1] * phd_curr + Nstar[0][2] * psd_curr)) + Mstar_inv[1][1] * (Fstar[1] - (Nstar[1][0] * thd_curr + Nstar[1][1] * phd_curr + Nstar[1][2] * psd_curr)) + Mstar_inv[1][2] * (Fstar[2] - (Nstar[2][0] * thd_curr + Nstar[2][1] * phd_curr + Nstar[2][2] * psd_curr)));
 }
 
-function get_psidd(th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
+function get_psidd(thd_curr, phd_curr, psd_curr)
 {
     /**
      * Gets the psidd from the eqution of motion with the current values.
@@ -199,7 +199,7 @@ function get_M_star_inverse()
      * The inverse is found by first finding the M-star matrix (see function get_M_star), then finding the covariance matrix of M-star, 
      * transposing it to get the adjugate-matrix and dividing each member of the adjugate matrix by the M-star's determinant yields the inverse M-star matrix.
      */
-    
+
     let Ms = get_M_star();
     determinant = ( Ms[0][0] * (Ms[1][1]*Ms[2][2] - Ms[1][2]*Ms[2][1]) - Ms[0][1] * (Ms[1][0]*Ms[2][2] - Ms[1][2]*Ms[2][0]) + Ms[0][2] * (Ms[1][0]*Ms[2][1] - Ms[1][1]*Ms[2][0]) );
 
