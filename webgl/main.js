@@ -3,8 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';  
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
-import  "./physics/Runge_Kutta";
-import  "./physics/Reaction_Forces";
+import {time, theta, phi, psi} from "./physics/Runge_Kutta";
+import {} from "./physics/Reaction_Forces";
 
 // Create the scene
 const scene = new THREE.Scene();
@@ -138,11 +138,11 @@ function animate()
     controls.update();
     renderer.render( scene, camera );
 
-    if (counter < 10000) 
+    if (counter < time.length) 
     {
-        rotate_body_1(0.0189);
-        rotate_body_2(0.025);
-        rotate_body_3(0.0132);
+        body1.rotation.y = theta[counter];
+        body2.rotation.z = phi[counter];
+        body3.rotation.z = psi[counter]
         counter += 1;
     }
     else 

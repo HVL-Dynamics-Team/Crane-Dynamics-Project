@@ -1,36 +1,36 @@
-var target_time = 1.5; // Measured in seconds
+var target_time = 10; // Measured in seconds
 
 var time_current = 0;
-var time = [time_current];
-var dt = 0.1;
+export const time = [time_current];
+var dt = 0.01;
 
-var thetad_max = 1000;
-var phid_max = 1000;
-var psid_max = 1000;
+var thetad_max = 2*3.14 / 4 ;
+var phid_max = 2*3.14 / 2 ;
+var psid_max = 2*3.14 / 4 ;
 
 var theta_current = 0;
 var thetad_current = 0;
 var thetadd_current = 0;
 
-var psi_current = 0;
-var psid_current = 0;
-var psidd_current = 0;
-
 var phi_current = 0;
 var phid_current = 0;
 var phidd_current = 0;
 
-const theta = [theta_current];
-const thetad = [thetad_current];
-const thetadd = [thetadd_current];
+var psi_current = 0;
+var psid_current = 0;
+var psidd_current = 0;
 
-const phi = [phi_current];
-const phid = [phid_current];
-const phidd = [phidd_current];
+export const theta = [theta_current];
+export const thetad = [thetad_current];
+export const thetadd = [thetadd_current];
 
-const psi = [psi_current];
-const psid = [psid_current];
-const psidd = [psidd_current];
+export const phi = [phi_current];
+export const phid = [phid_current];
+export const phidd = [phidd_current];
+
+export const psi = [psi_current];
+export const psid = [psid_current];
+export const psidd = [psidd_current];
 
 
 function runge_kutta() {
@@ -51,7 +51,7 @@ function runge_kutta() {
         let psi_temp = psi_current;
 
         // Find k1.
-        let k1 = get_Qd(theta_temp, thetad_temp, psi_temp, psid_temp, phi_temp, phid_temp);
+        let k1 = get_Qd(theta_temp, thetad_temp, phi_temp, phid_temp, psi_temp, psid_temp);
 
         k1[0] = k1[0] * dt;
         k1[1] = k1[1] * dt;
@@ -142,7 +142,7 @@ function runge_kutta() {
         // Increment timestep
         time_current = time_current + dt;
 
-        console.log("k1: ", k1, "\tk2: ", k2, "\tk3: ", k3, "\tk4: ", k4);
+        //console.log("k1: ", k1, "\tk2: ", k2, "\tk3: ", k3, "\tk4: ", k4);
         //console.log("theta: ", theta_current, "\tphi: ", phi_current, "\tpsi: ", psi_current, "\tthetad: ", thetad_current, "\tphid: ", phid_current, "\tpsid: ", psid_current);
 
         // Store the new variables in our lists.
@@ -163,5 +163,5 @@ runge_kutta();
 console.log("Runge kutta. \n");
 for (let i = 0; i < time.length; i++)
 {
-    console.log("time: ", time[i], "\ttheta ", theta[i], "\tphi ", phi[i], "\tpsi ", psi[i]);
+    console.log("time: ", time[i], "\ttheta ", theta[i], "\tphi ", phi[i], "\tpsi ", psi[i], "\tthetad: ", thetad[i], "\tphid: ", phid[i], "\tpsid: ", psid[i]);
 }
