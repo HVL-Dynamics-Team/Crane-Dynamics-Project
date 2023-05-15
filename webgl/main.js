@@ -3,8 +3,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';  
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
-import {time, theta, phi, psi} from "./physics/Runge_Kutta";
-import {} from "./physics/Reaction_Forces";
+import { LineController, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js';
+import {time, theta, phi, psi, runge_kutta} from "./physics/Runge_Kutta";
+import {Reaction_Forces_inertial} from "./physics/Reaction_Forces";
+
+
+// Run initial Runge-Kutta function.
+runge_kutta();
 
 // Create the scene
 const scene = new THREE.Scene();
@@ -142,7 +147,7 @@ function animate()
     {
         body1.rotation.y = theta[counter];
         body2.rotation.z = phi[counter];
-        body3.rotation.z = psi[counter]
+        body3.rotation.z = psi[counter];
         counter += 1;
     }
     else 
@@ -150,21 +155,6 @@ function animate()
         reset_positions();
         counter = 0;
     }
-}
-
-function rotate_body_1 (angle)
-{
-    body1.rotation.y += angle;
-}
-
-function rotate_body_2 (angle) 
-{
-    body2.rotation.z += angle;
-}
-
-function rotate_body_3 (angle)
-{
-    body3.rotation.z += angle;
 }
 
 function reset_positions()

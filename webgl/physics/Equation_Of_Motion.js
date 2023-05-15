@@ -1,8 +1,8 @@
 var g = 9.81;
 
-var T1 = 0.05;
-var T2 = 0.0;
-var T3 = 0.05;
+var T1 = 0.1;
+var T2 = 0.54;
+var T3 = 0.15;
 
 var m1 = 2;
 var m2 = 0.2;

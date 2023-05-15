@@ -5,7 +5,7 @@ export const time = [time_current];
 var dt = 0.01;
 
 var thetad_max = 2*3.14 / 4 ;
-var phid_max = 2*3.14 / 2 ;
+var phid_max = 2*3.14 ;
 var psid_max = 2*3.14 / 4 ;
 
 var theta_current = 0;
@@ -33,7 +33,7 @@ export const psid = [psid_current];
 export const psidd = [psidd_current];
 
 
-function runge_kutta() {
+export function runge_kutta() {
     /**
      * The main function for running the Runge-Kutta numerical analysis of the differential equations provided from the Equation of Motion.
      * The calculations will loop through till we have reached the targeted time.
@@ -157,11 +157,46 @@ function runge_kutta() {
         psid.push(psid_current);
         psidd.push(psidd_current);
     }
+    // TODO: Make some sort of debug-option that turns this on or off depending on the user preferences.
+    /**
+     * 
+    console.log("Runge kutta. \n");
+    for (let i = 0; i < time.length; i++)
+    {
+        console.log("time: ", time[i], "\ttheta ", theta[i], "\tphi ", phi[i], "\tpsi ", psi[i], "\tthetad: ", thetad[i], "\tphid: ", phid[i], "\tpsid: ", psid[i]);
+    }
+    */
 }
 
-runge_kutta();
-console.log("Runge kutta. \n");
-for (let i = 0; i < time.length; i++)
+export function reset_rk_results()
 {
-    console.log("time: ", time[i], "\ttheta ", theta[i], "\tphi ", phi[i], "\tpsi ", psi[i], "\tthetad: ", thetad[i], "\tphid: ", phid[i], "\tpsid: ", psid[i]);
+    /**
+     * Resets all the values stored for the RK analysis in preparation for the next one.
+     */
+    //TODO: Test that the reset function works.
+    theta_current = 0;
+    thetad_current = 0;
+    thetadd_current = 0;
+
+    phi_current = 0;
+    phid_current = 0;
+    phidd_current = 0;
+
+    psi_current = 0;
+    psid_current = 0;
+    psidd_current = 0;
+
+    time.splice(0, time.length);
+
+    theta.splice(0, theta.length);
+    thetad.splice(0, thetad.length);
+    thetadd.splice(0, thetadd.length);
+
+    phi.splice(0, phi.length);
+    phid.splice(0, phid.length);
+    phidd.splice(0, phidd.length);
+
+    psi.splice(0, psi.length);
+    psid.splice(0, psid.length);
+    psidd.splice(0, psidd.length);
 }
