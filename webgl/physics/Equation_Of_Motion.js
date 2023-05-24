@@ -1,45 +1,12 @@
-var g = 9.81;
+import {g, T1, T2, T3, m1, m2, m3, a, b, c, h, l1, l2, r1, r2, r3} from "./crane_variables";
 
-var T1 = -0.15;
-var T2 = 0.54;
-var T3 = 0.15;
-
-var m1 = 2;
-var m2 = 0.2;
-var m3 = 0.1;
-
-var a = 0.150;
-var b = 0.1;
-var c = 0.3;
-var h = 0.4;
-var l1 = 0.150;
-var l2 = 0.100;
-
-var r1 = 0.05;
-var r2 = 0.01;
-var r3 = 0.01; 
-
-// We assume here that the tower and arms can all be considered cylinders, of course this may not hold in which case some other formula for mass moment of inertia should be used.
-// Any modern CAD software is also likely to give the mass moment of inertia about the axises and can also be inserted directly.
-var J11 = (1/12)* m1 * (3*(r1)**2 + (h + b)**2);
-var J12 = (1/12)* m1 * (3*(r1)**2 + (h + b)**2);
-var J13 = (1/2) * m1 *(r1**2);
-
-var J21 = (1/12)* m2 * (3*(r2)**2 + (l1)**2);
-var J22 = (1/2) * m2 *(r2**2);
-var J23 = (1/12)* m2 * (3*(r2)**2 + (l1)**2);
-
-var J31 = (1/12)* m3 * (3*(r3)**2 + (l2)**2);
-var J32 = (1/2) * m3 *(r3**2);
-var J33 = (1/12)* m3 * (3*(r3)**2 + (l2)**2);
-
-var Mstar = new Array();
-var Mstar_inv = new Array();
-var Nstar = new Array();
-var Fstar = new Array();
+export var Mstar = new Array();
+export var Mstar_inv = new Array();
+export var Nstar = new Array();
+export var Fstar = new Array();
 
 
-function get_Qd (th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
+export function get_Qd (th_curr, thd_curr, ph_curr, phd_curr, ps_curr, psd_curr)
 {
     /**
      * Calculates the acceleration terms from the equation of moiton as:
@@ -101,6 +68,20 @@ function get_N_star(theta, thetad, phi, phid, psi, psid)
     let Ns0 = new Array();
     let Ns1 = new Array();
     let Ns2 = new Array();
+
+    // We assume here that the tower and arms can all be considered cylinders, of course this may not hold in which case some other formula for mass moment of inertia should be used.
+    // Any modern CAD software is also likely to give the mass moment of inertia about the axises and can also be inserted directly.
+    let J11 = (1/12)* m1 * (3*(r1)**2 + (h + b)**2);
+    let J12 = (1/12)* m1 * (3*(r1)**2 + (h + b)**2);
+    let J13 = (1/2) * m1 *(r1**2);
+    
+    let J21 = (1/12)* m2 * (3*(r2)**2 + (l1)**2);
+    let J22 = (1/2) * m2 *(r2**2);
+    let J23 = (1/12)* m2 * (3*(r2)**2 + (l1)**2);
+
+    let J31 = (1/12)* m3 * (3*(r3)**2 + (l2)**2);
+    let J32 = (1/2) * m3 *(r3**2);
+    let J33 = (1/12)* m3 * (3*(r3)**2 + (l2)**2);
     
     // First row
     let Ns00 = J22*phid*Math.sin(2*phi) - J23*phid*Math.sin(2*phi) - (l1**2*m2*phid*Math.sin(2*phi))/8 - (l1**2*m3*phid*Math.sin(2*phi))/2 - (l2**2*m3*phid*Math.sin(2*phi + 2*psi))/8 - 
@@ -166,6 +147,21 @@ function get_M_star(theta, phi, psi)
     let Ms0 = new Array();
     let Ms1 = new Array();
     let Ms2 = new Array();
+
+    // We assume here that the tower and arms can all be considered cylinders, of course this may not hold in which case some other formula for mass moment of inertia should be used.
+    // Any modern CAD software is also likely to give the mass moment of inertia about the axises and can also be inserted directly.
+    let J11 = (1/12)* m1 * (3*(r1)**2 + (h + b)**2);
+    let J12 = (1/12)* m1 * (3*(r1)**2 + (h + b)**2);
+    let J13 = (1/2) * m1 *(r1**2);
+    
+    let J21 = (1/12)* m2 * (3*(r2)**2 + (l1)**2);
+    let J22 = (1/2) * m2 *(r2**2);
+    let J23 = (1/12)* m2 * (3*(r2)**2 + (l1)**2);
+
+    let J31 = (1/12)* m3 * (3*(r3)**2 + (l2)**2);
+    let J32 = (1/2) * m3 *(r3**2);
+    let J33 = (1/12)* m3 * (3*(r3)**2 + (l2)**2);
+
     // First row
     let Ms00 = J13 + m3*(a*Math.sin(theta) + c*Math.sin(theta) + (l2*Math.cos(phi + psi)*Math.cos(theta))/2 + l1*Math.cos(phi)*Math.cos(theta))**2 + 
                 m3*(a*Math.cos(theta) + c*Math.cos(theta) - (l2*Math.cos(phi + psi)*Math.sin(theta))/2 - l1*Math.cos(phi)*Math.sin(theta))**2 + 

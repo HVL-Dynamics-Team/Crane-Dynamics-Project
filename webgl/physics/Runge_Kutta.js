@@ -1,36 +1,25 @@
-var target_time = 10; // Measured in seconds
+import {get_Qd} from "./Equation_Of_Motion";
+import {target_time, time, dt, 
+        thetad_max, phid_max, psid_max, 
+        theta, thetad, thetadd,
+        phi, phid, phidd,
+        psi, psid, psidd
+        } from "./crane_variables.js";
+
 
 var time_current = 0;
-export const time = [time_current];
-var dt = 0.01;
-
-var thetad_max = 2*3.14 / 4 ;
-var phid_max = 2*3.14 ;
-var psid_max = 2*3.14 / 4 ;
 
 var theta_current = 0;
 var thetad_current = 0;
 var thetadd_current = 0;
-
+        
 var phi_current = 0;
 var phid_current = 0;
 var phidd_current = 0;
-
+        
 var psi_current = 0;
 var psid_current = 0;
 var psidd_current = 0;
-
-export const theta = [theta_current];
-export const thetad = [thetad_current];
-export const thetadd = [thetadd_current];
-
-export const phi = [phi_current];
-export const phid = [phid_current];
-export const phidd = [phidd_current];
-
-export const psi = [psi_current];
-export const psid = [psid_current];
-export const psidd = [psidd_current];
 
 
 export function runge_kutta() {
@@ -39,6 +28,9 @@ export function runge_kutta() {
      * The calculations will loop through till we have reached the targeted time.
      * All the variables are stored in lists that can be used for graphical illustrations, saving as raw data or performing calculations.
      */
+
+    // Reset any previous saved data from runs back to defaults before running new Runge-Kutta.
+    reset_rk_results();
 
     while (time_current < target_time) {
         
@@ -168,7 +160,7 @@ export function runge_kutta() {
     */
 }
 
-export function reset_rk_results()
+function reset_rk_results()
 {
     /**
      * Resets all the values stored for the RK analysis in preparation for the next one.

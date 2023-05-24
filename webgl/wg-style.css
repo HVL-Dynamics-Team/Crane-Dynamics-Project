@@ -1,0 +1,17 @@
+.controlpanel {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.controlpanel form {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.controlpanel form input {
+    padding: 10px;
+}
+
+#animation_container {
+    padding-top: 20px;
+}

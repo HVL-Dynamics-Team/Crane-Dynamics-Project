@@ -4,12 +4,60 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import { LineController, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js';
-import {time, theta, phi, psi, runge_kutta} from "./physics/Runge_Kutta";
+import {time, theta, phi, psi} from "./physics/crane_variables"
+import {runge_kutta} from "./physics/Runge_Kutta";
 import {Reaction_Forces_inertial} from "./physics/Reaction_Forces";
 
+// Define variables for determining if the animations should run and at what stage it's running
+var isStartButtonPressed = false;
+var isPaused = false;
+var counter = 0;
 
-// Run initial Runge-Kutta function.
-runge_kutta();
+// Define reference objects for the button- and input-field elements on the HTML page.
+const startBtn = document.getElementById("button_start");
+const pauseBtn = document.getElementById("button_pause");
+const resetBtn = document.getElementById("button_reset");
+const simulationSettingsBtn = document.getElementById("button_simulation_settings");
+
+
+// Add eventlistener for start button.
+startBtn.addEventListener("click", function() {
+    if (!isStartButtonPressed) {
+        runge_kutta();
+        isStartButtonPressed = true;
+        startBtn.disabled = "disabled";
+        resetBtn.disabled = "";
+        simulationSettingsBtn.disabled = "disabled";
+    }
+});
+
+// Add eventlistener for pause button
+pauseBtn.addEventListener("click", function() {
+    if (!isPaused && isStartButtonPressed) {
+        isPaused = true;
+        pauseBtn.value = "Resume";
+    } else {
+        isPaused = false;
+        pauseBtn.value = "Pause";
+    }
+});
+
+// Disable the resetbutton at first stage of login.
+resetBtn.disabled = "disabled";
+resetBtn.addEventListener("click", function() {
+    if (isStartButtonPressed) {    
+        resetBtn.disabled = "disabled";
+        reset_positions();
+        counter = 0;
+        isStartButtonPressed = false;
+        startBtn.disabled = "";
+        simulationSettingsBtn.disabled = "";
+    }
+});
+
+simulationSettingsBtn.addEventListener("click", function() {
+
+});
 
 // Create the scene
 const scene = new THREE.Scene();
@@ -17,7 +65,8 @@ const scene = new THREE.Scene();
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth / 1.5, window.innerHeight / 1.5 ); // Render the model at a quarter of the page size for now.
-document.body.appendChild( renderer.domElement );
+const pageAnimationContainer = document.getElementById("animation_container");
+pageAnimationContainer.appendChild( renderer.domElement );
 
 // Camera for looking at the scene
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -127,7 +176,7 @@ body1.position.y = 75;
 // Body 2
 body2.position.y = 225;
 body2.rotation.y = Math.PI / 2;
-body2.rotation.z = Math.PI;
+body2.rotation.z = 0;
 body2.position.x = 70;
 // Body 3
 body3.position.x = 120;
@@ -136,31 +185,33 @@ body3.position.z = -30;
 // Add parts to scene
 scene.add(base);
 
-var counter = 0;
 function animate()
 {
     requestAnimationFrame( animate );
     controls.update();
     renderer.render( scene, camera );
 
-    if (counter < time.length) 
+    if (isStartButtonPressed && !isPaused)
     {
-        body1.rotation.y = theta[counter];
-        body2.rotation.z = phi[counter];
-        body3.rotation.z = psi[counter];
-        counter += 1;
-    }
-    else 
-    {
-        reset_positions();
-        counter = 0;
+        if (counter < time.length) 
+        {
+            body1.rotation.y = theta[counter];
+            body2.rotation.z = phi[counter];
+            body3.rotation.z = psi[counter];
+            counter += 1;
+        }
+        else 
+        {
+            reset_positions();
+            counter = 0;
+        }
     }
 }
 
 function reset_positions()
 {
     body1.rotation.y = 0;
-    body2.rotation.z = Math.PI;
+    body2.rotation.z = 0;
     body3.rotation.z = 0;
 }
 
