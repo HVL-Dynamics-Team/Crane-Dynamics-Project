@@ -64,11 +64,21 @@ body {
 
 #settings_panel #settings_motors input {
     position: relative;
-    width: 87%;
+    width: 85%;
+    margin-top: 2px;
+    margin-bottom: 5px;
 }
 
 #settings_panel #settings_motors #settings_motor1 {
-    border: 1px solid red;
+    border: 2px solid red;
+}
+
+#settings_panel #settings_motors #settings_motor2 {
+    border: 2px solid green;
+}
+
+#settings_panel #settings_motors #settings_motor3 {
+    border: 2px solid purple;
 }
 
 #settings_panel #settings_apply_and_close {

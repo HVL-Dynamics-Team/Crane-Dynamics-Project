@@ -29,8 +29,16 @@ export function runge_kutta() {
      * All the variables are stored in lists that can be used for graphical illustrations, saving as raw data or performing calculations.
      */
 
-    // Reset any previous saved data from runs back to defaults before running new Runge-Kutta.
-    reset_rk_results();
+    time.push(time_current);
+    theta.push(theta_current);
+    phi.push(phi_current);
+    psi.push(psi_current);
+    thetad.push(thetad_current);
+    phid.push(phid_current);
+    psid.push(psid_current);
+    thetadd.push(thetadd_current);
+    phidd.push(phidd_current);
+    psidd.push(psidd_current);
 
     while (time_current < target_time) {
         
@@ -150,8 +158,7 @@ export function runge_kutta() {
         psidd.push(psidd_current);
     }
     // TODO: Make some sort of debug-option that turns this on or off depending on the user preferences.
-    /**
-     * 
+    /*
     console.log("Runge kutta. \n");
     for (let i = 0; i < time.length; i++)
     {
@@ -166,6 +173,9 @@ export function reset_rk_results()
      * Resets all the values stored for the RK analysis in preparation for the next one.
      */
     //TODO: Test that the reset function works.
+
+    time_current = 0;
+
     theta_current = 0;
     thetad_current = 0;
     thetadd_current = 0;
@@ -191,4 +201,5 @@ export function reset_rk_results()
     psi.splice(0, psi.length);
     psid.splice(0, psid.length);
     psidd.splice(0, psidd.length);
+    console.log (time, theta);
 }
