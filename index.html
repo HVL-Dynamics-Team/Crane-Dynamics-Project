@@ -4,24 +4,46 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 		<title>Crane model</title>
-		<link rel="shortcut icon" href="./assets/crane_icon-4a29e79a.ico" type="image/x-icon">
-		<script src="./physics/Equation_Of_Motion.js"></script>
-		<script src="./physics/Runge_Kutta.js"></script>
-		<script src="./physics/Reaction_Forces.js"></script>
+		<link rel="shortcut icon" href="/assets/crane_icon-4a29e79a.ico" type="image/x-icon">
 		
-		<script type="module" crossorigin src="./assets/index-c0ed7a4f.js"></script>
+		
+		<script type="module" crossorigin src="/assets/index-72e4877a.js"></script>
+		<link rel="stylesheet" href="/assets/index-fa12bed3.css">
 	</head>
 	<body>
+		<div class="controlpanel">
+			<h3>Simulation control panel</h3>
+			<p>
+				To start, click "Start" <br>
+				To change simulation settings and variables, click "Settings"
+			</p>
+			<p>
+				You may at any time pause or stop. <br>
+				After stopping or before start, you may change any of the variables  used <br> 
+				by the built-in Runge-Kutta function and see the effects on the simulation. <br>
+				The Runge-Kutta has a set time interval it calculates for, once the simulation hits that it loops back to start.
+			</p>
+			<form action="">
+				<input type="button" id="button_start" value="Start">
+				<input type="button" id="button_pause" value="Pause">
+				<input type="button" id="button_stop" value="Stop">
+				<input type="button" id="button_simulation_settings" value="Settings">
+			</form>
+			<div id="settings_panel_container"></div>
+		</div>
+
+		<div id="animation_container"></div>
+
+		<canvas id="chart_angles"></canvas>
+		<canvas id="chart_velocities"></canvas>
+		<canvas id="chart_accelerations"></canvas>
+		<canvas id="chart_reactionforces_inertial"></canvas>
+
 		<p>
 			The following links go to videos of the physical model rotating individual bodies, one by one. <br>
 			<a href="./videos/theta_video.html">Video: Body-1 rotating (Change in theta)</a> <br>
 			<a href="./videos/phi_video.html">Video: Body-2 rotating (Change in phi)</a> <br>
 			<a href="./videos/psi_video.html">Video: Body-3 rotating (Change in psi)</a> <br>
 		</p>
-
-		<canvas id="chart_angles"></canvas>
-		<canvas id="chart_velocities"></canvas>
-		<canvas id="chart_accelerations"></canvas>
-		<canvas id="chart_reactionforces_inertial"></canvas>
 	</body>
 </html>
