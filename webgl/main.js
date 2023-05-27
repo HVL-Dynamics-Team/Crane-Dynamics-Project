@@ -9,197 +9,18 @@ import {set_torque, set_mass, set_a, set_b, set_c, set_h, set_l1, set_l2, set_g,
         set_thetad_max, set_phid_max, set_psid_max, reset_crane_varibles_to_default} from "./physics/crane_variables";
 import {runge_kutta, reset_rk_results} from "./physics/Runge_Kutta";
 import {Reaction_Forces_inertial} from "./physics/Reaction_Forces";
+import { settingsDiv } from './physics/settings_page';
+
+// Define reference objects for the button- and input-field elements on the HTML page.
+export const startBtn = document.getElementById("button_start");
+export const pauseBtn = document.getElementById("button_pause");
+export const stopBtn = document.getElementById("button_stop");
+export const simulationSettingsBtn = document.getElementById("button_simulation_settings");
 
 // Define variables for determining if the animations should run and at what stage it's running
 var isStartButtonPressed = false;
 var isPaused = false;
 var counter = 0;
-
-// Define reference objects for the button- and input-field elements on the HTML page.
-const startBtn = document.getElementById("button_start");
-const pauseBtn = document.getElementById("button_pause");
-const stopBtn = document.getElementById("button_stop");
-const simulationSettingsBtn = document.getElementById("button_simulation_settings");
-
-// Make the pop-up page for the simulation settings.
-const settingsDiv = document.createElement("div");
-settingsDiv.id = "settings_panel";
-
-// Motor control (torque and max velocity)
-const settings_motors = document.createElement("div");
-settings_motors.id = "settings_motors";
-
-const settings_motor1 = document.createElement("div");
-settings_motor1.id = "settings_motor1";
-const settings_motor1_header = document.createElement("h3");
-settings_motor1_header.innerHTML = "Motor 1";
-settings_motor1.appendChild(settings_motor1_header);
-const settings_motor1_currenttorque = document.createElement("h4");
-settings_motor1_currenttorque.innerHTML = "Torque: " + T1 + " [Nm]";
-settings_motor1.appendChild(settings_motor1_currenttorque);
-const settings_motor1_newtorque = document.createElement("input");
-settings_motor1_newtorque.type = "text";
-settings_motor1_newtorque.placeholder = "new torque [Nm]";
-settings_motor1.appendChild(settings_motor1_newtorque);
-const settings_motor1_currentmaxvelocity = document.createElement("h4");
-settings_motor1_currentmaxvelocity.innerHTML = "Max velocity: " + thetad_max + " [rad/s]";
-settings_motor1.appendChild(settings_motor1_currentmaxvelocity);
-const settings_motor1_newmaxvelocity = document.createElement("input");
-settings_motor1_newmaxvelocity.type = "text";
-settings_motor1_newmaxvelocity.placeholder = "new max velocity [rad/s]";
-settings_motor1.appendChild(settings_motor1_newmaxvelocity);
-settings_motors.appendChild(settings_motor1);
-
-const settings_motor2 = document.createElement("div");
-settings_motor2.id = "settings_motor2";
-const settings_motor2_header = document.createElement("h3");
-settings_motor2_header.innerHTML = "Motor 2";
-settings_motor2.appendChild(settings_motor2_header);
-const settings_motor2_currenttorque = document.createElement("h4");
-settings_motor2_currenttorque.innerHTML = "Torque: " + T2 + " [Nm]";
-settings_motor2.appendChild(settings_motor2_currenttorque);
-const settings_motor2_newtorque = document.createElement("input");
-settings_motor2_newtorque.type = "text";
-settings_motor2_newtorque.placeholder = "new torque [Nm]";
-settings_motor2.appendChild(settings_motor2_newtorque);
-const settings_motor2_currentmaxvelocity = document.createElement("h4");
-settings_motor2_currentmaxvelocity.innerHTML = "Max velocity: " + phid_max + " [rad/s]";
-settings_motor2.appendChild(settings_motor2_currentmaxvelocity);
-const settings_motor2_newmaxvelocity = document.createElement("input");
-settings_motor2_newmaxvelocity.type = "text";
-settings_motor2_newmaxvelocity.placeholder = "new max velocity [rad/s]";
-settings_motor2.appendChild(settings_motor2_newmaxvelocity);
-settings_motors.appendChild(settings_motor2);
-
-const settings_motor3 = document.createElement("div");
-settings_motor3.id = "settings_motor3";
-const settings_motor3_header = document.createElement("h3");
-settings_motor3_header.innerHTML = "Motor 3";
-settings_motor3.appendChild(settings_motor3_header);
-const settings_motor3_currenttorque = document.createElement("h4");
-settings_motor3_currenttorque.innerHTML = "Torque: " + T3 + " [Nm]";
-settings_motor3.appendChild(settings_motor3_currenttorque);
-const settings_motor3_newtorque = document.createElement("input");
-settings_motor3_newtorque.type = "text";
-settings_motor3_newtorque.placeholder = "new torque [Nm]";
-settings_motor3.appendChild(settings_motor3_newtorque);
-const settings_motor3_currentmaxvelocity = document.createElement("h4");
-settings_motor3_currentmaxvelocity.innerHTML = "Max velocity: " + psid_max + " [rad/s]";
-settings_motor3.appendChild(settings_motor3_currentmaxvelocity);
-const settings_motor3_newmaxvelocity = document.createElement("input");
-settings_motor3_newmaxvelocity.type = "text";
-settings_motor3_newmaxvelocity.placeholder = "new max velocity [rad/s]";
-settings_motor3.appendChild(settings_motor3_newmaxvelocity);
-settings_motors.appendChild(settings_motor3);
-
-settingsDiv.appendChild(settings_motors);
-
-// Time control
-
-// Dimensions
-
-// Masses
-
-// Gravity control
-
-// Update fields in settings
-function update_settings ()
-{
-    // Update motors current torque
-    settings_motor1_newtorque.value = "";
-    settings_motor2_newtorque.value = "";
-    settings_motor3_newtorque.value = "";
-    settings_motor1_currenttorque.innerHTML = "Torque: " + T1 + " [Nm]";
-    settings_motor2_currenttorque.innerHTML = "Torque: " + T2 + " [Nm]";
-    settings_motor3_currenttorque.innerHTML = "Torque: " + T3 + " [Nm]";
-    // Update motors current max velocity
-    settings_motor1_currentmaxvelocity.innerHTML = "Max velocity: " + thetad_max + " [rad/s]";
-    settings_motor2_currentmaxvelocity.innerHTML = "Max velocity: " + phid_max + " [rad/s]";
-    settings_motor3_currentmaxvelocity.innerHTML = "Max velocity: " + psid_max + " [rad/s]";
-    settings_motor1_newmaxvelocity.value = "";
-    settings_motor2_newmaxvelocity.value = "";
-    settings_motor3_newmaxvelocity.value = "";
-}
-
-function clear_settings_fields ()
-{
-    // Clear motor text fields
-    try {
-        let new_T1 = parseFloat(settings_motor1_newtorque.value);
-        let new_T2 = parseFloat(settings_motor2_newtorque.value);
-        let new_T3 = parseFloat(settings_motor3_newtorque.value);
-        
-        if (isNaN(new_T1)) {
-            new_T1 = T1;
-        }
-        if (isNaN(new_T2)) {
-            new_T2 = T2;
-        }
-        if (isNaN(new_T3)) {
-            new_T3 = T3;
-        }
-        set_torque(new_T1, new_T2, new_T3);
-
-    } catch (error) {
-        alert("Value inserted into one or more of 'Motor new torque' field(s) was not accepted!");
-    }
-    
-    try {
-        let new_thetad_max = parseFloat(settings_motor1_newmaxvelocity.value);
-        let new_phid_max = parseFloat(settings_motor2_newmaxvelocity.value);
-        let new_psid_max = parseFloat(settings_motor3_newmaxvelocity.value);
-
-        if (isNaN(new_thetad_max)) {
-            new_thetad_max = thetad_max;
-        }
-        set_thetad_max(new_thetad_max);
-
-        if (isNaN(new_phid_max)) {
-            new_phid_max = phid_max;
-        }
-        set_phid_max(new_phid_max);
-
-        if (isNaN(new_psid_max)) {
-            new_psid_max = psid_max;
-        }
-        set_psid_max(new_psid_max);
-
-    } catch (error) {
-        alert("Value inserted into one or more of 'Motor new max velocity' field(s) was not accepted!");
-    }
-}
-
-// Buttons for applying settings and closing settings page.
-const settings_close_and_apply = document.createElement("form");
-settings_close_and_apply.action = "";
-settings_close_and_apply.id = "settings_apply_and_close";
-
-const settings_apply = document.createElement("input");
-settings_apply.type = "button";
-settings_apply.id = "settings_apply";
-settings_apply.value = "Apply";
-settings_apply.addEventListener("click", function() {
-    clear_settings_fields();
-    update_settings();
-});
-
-const settings_close = document.createElement("input");
-settings_close.type = "button";
-settings_close.id = "settings_close";
-settings_close.value = "Close";
-settings_close.addEventListener("click", function() {
-    update_settings();
-    document.getElementById("settings_panel_container").removeChild(settingsDiv);
-    startBtn.disabled = "";
-    pauseBtn.disabled = "";
-    stopBtn.disabled = "disabled";
-});
-
-settings_close_and_apply.appendChild(settings_apply);
-settings_close_and_apply.appendChild(settings_close);
-
-settingsDiv.appendChild(settings_close_and_apply);
-
 
 // Add eventlistener for start button.
 startBtn.addEventListener("click", function() {
@@ -250,7 +71,7 @@ const scene = new THREE.Scene();
 
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth / 1.5, window.innerHeight / 1.5 ); // Render the model at a quarter of the page size for now.
+renderer.setSize( window.innerWidth / 1.1, window.innerHeight / 1.5 ); // Render the model at a quarter of the page size for now.
 const pageAnimationContainer = document.getElementById("animation_container");
 pageAnimationContainer.appendChild( renderer.domElement );
 

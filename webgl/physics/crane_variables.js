@@ -1,3 +1,5 @@
+export var debug_mode = false; // True if debug info should be printed to the console, false if not.
+
 export var g = 9.81;
 
 export var T1 = -0.15;
@@ -77,8 +79,8 @@ export function set_l2 (new_l2) {
     l2 = new_l2;
 }
 
-export function set_g (new_l3) {
-    l3 = new_l3;
+export function set_g (new_g) {
+    g = new_g;
 }
 
 export function set_r1 (new_r1) {

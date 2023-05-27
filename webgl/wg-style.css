@@ -27,29 +27,32 @@ body {
     left: 2%;
     width: 96%;
     height: 96%;
-    min-width: 360px;
     border: 2px solid black;
     border-radius: 5px;
     background-color: whitesmoke;
     position: fixed;
-    display: flex;
+    display: block;
     flex-direction: column;
     overflow: scroll;
 }
 
+
+/* 
+ * CSS style for MOTOR-SETTINGS in the settings pop-up
+ */
 #settings_panel #settings_motors {
     display: flex;
     flex-direction: row;
+    margin: 5px;
+    min-height: 150px;
 }
 
-#settings_panel #settings_motors input {
-    padding: 8px;
-    margin-left: 2px;
-    margin-right: 2px;
-}
 #settings_panel #settings_motors div {
     margin-left: 3px;
-    margin-right: 2px;
+    margin-right: 5px;
+    min-width: 180px;
+    min-height: 150px;
+    border: 1px solid gray;
 }
 
 #settings_panel #settings_motors h3 {
@@ -64,31 +67,179 @@ body {
 
 #settings_panel #settings_motors input {
     position: relative;
-    width: 85%;
+    width: 94%;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    padding: 3px;
+    text-align: right;
+}
+
+
+/* 
+ * CSS style for TIME-SETTINGS in the settings pop-up
+ */
+#settings_panel #settings_time {
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+    height: 10%;
+    min-height: 100px;
+}
+
+#settings_panel #settings_time div {
+    margin-left: 3px;
+    margin-right: 5px;
+    min-width: 180px;
+    min-height: 100px;
+    border: 1px solid gray;
+}
+
+#settings_panel #settings_time h3 {
+    margin-top: 5px;
+    margin-bottom: 3px;
+}
+
+#settings_panel #settings_time h4 {
     margin-top: 2px;
     margin-bottom: 5px;
 }
 
-#settings_panel #settings_motors #settings_motor1 {
-    border: 2px solid red;
+#settings_panel #settings_time input {
+    position: relative;
+    width: 94%;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    padding: 3px;
+    text-align: right;
 }
 
-#settings_panel #settings_motors #settings_motor2 {
-    border: 2px solid green;
-}
 
-#settings_panel #settings_motors #settings_motor3 {
-    border: 2px solid purple;
-}
-
-#settings_panel #settings_apply_and_close {
-    position: absolute;
-    max-height: 10%;
-    bottom: 1px;
-    right: 4px;
+/*
+* CSS style for DIMENSIONS SETTINGS in the settings pop-up
+*/
+#settings_panel #settings_dimensions {
     display: flex;
     flex-direction: row;
-    border: 1px solid blue;
+    margin: 5px;
+    height: 10%;
+    min-height: 100px;
+}
+
+#settings_panel #settings_dimensions div {
+    margin-left: 3px;
+    margin-right: 5px;
+    min-width: 150px;
+    min-height: 100px;
+    border: 1px solid gray;
+}
+
+#settings_panel #settings_dimensions h3 {
+    margin-top: 5px;
+    margin-bottom: 3px;
+}
+
+#settings_panel #settings_dimensions h4 {
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+
+#settings_panel #settings_dimensions input {
+    position: relative;
+    width: 94%;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    padding: 3px;
+    text-align: right;
+}
+
+
+/* 
+ * CSS style for MOTOR-SETTINGS in the settings pop-up
+ */
+ #settings_panel #settings_mass {
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+    min-height: 100px;
+}
+
+#settings_panel #settings_mass div {
+    margin-left: 3px;
+    margin-right: 5px;
+    min-width: 180px;
+    min-height: 100px;
+    border: 1px solid gray;
+}
+
+#settings_panel #settings_mass h3 {
+    margin-top: 5px;
+    margin-bottom: 3px;
+}
+
+#settings_panel #settings_mass h4 {
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+
+#settings_panel #settings_mass input {
+    position: relative;
+    width: 94%;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    padding: 3px;
+    text-align: right;
+}
+
+
+/* 
+ * CSS style for GRAVITY-SETTINGS in the settings pop-up
+ */
+ #settings_panel #settings_gravity_control {
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+    min-height: 100px;
+}
+
+#settings_panel #settings_gravity_control div {
+    margin-left: 3px;
+    margin-right: 5px;
+    min-width: 180px;
+    min-height: 100px;
+    border: 1px solid gray;
+}
+
+#settings_panel #settings_gravity_control h3 {
+    margin-top: 5px;
+    margin-bottom: 3px;
+}
+
+#settings_panel #settings_gravity_control h4 {
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+
+#settings_panel #settings_gravity_control input {
+    position: relative;
+    width: 94%;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    padding: 3px;
+    text-align: right;
+}
+
+
+/* 
+ * CSS style for APPLYING- AND CLOSING SETTINGS in the settings pop-up
+ */
+#settings_panel #settings_apply_and_close {
+    position: fixed;
+    max-height: 10%;
+    min-height: 40px;
+    bottom: 2%;
+    right: 2%;
+    display: flex;
+    flex-direction: row;
 }
 
 #settings_panel #settings_apply_and_close input {
@@ -98,4 +249,3 @@ body {
     margin-left: 5px;
     margin-right: 5px;
 }
-

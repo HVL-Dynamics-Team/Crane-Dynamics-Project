@@ -1,5 +1,5 @@
 import {get_Qd} from "./Equation_Of_Motion";
-import {target_time, time, dt, 
+import {debug_mode, target_time, time, dt, 
         thetad_max, phid_max, psid_max, 
         theta, thetad, thetadd,
         phi, phid, phidd,
@@ -157,14 +157,16 @@ export function runge_kutta() {
         psid.push(psid_current);
         psidd.push(psidd_current);
     }
-    // TODO: Make some sort of debug-option that turns this on or off depending on the user preferences.
-    /*
-    console.log("Runge kutta. \n");
-    for (let i = 0; i < time.length; i++)
+    
+    // Debug info
+    if (debug_mode) 
     {
-        console.log("time: ", time[i], "\ttheta ", theta[i], "\tphi ", phi[i], "\tpsi ", psi[i], "\tthetad: ", thetad[i], "\tphid: ", phid[i], "\tpsid: ", psid[i]);
+        console.log("Runge kutta. \n");
+        for (let i = 0; i < time.length; i++)
+        {
+            console.log("time: ", time[i], "\ttheta ", theta[i], "\tphi ", phi[i], "\tpsi ", psi[i], "\tthetad: ", thetad[i], "\tphid: ", phid[i], "\tpsid: ", psid[i]);
+        }
     }
-    */
 }
 
 export function reset_rk_results()
@@ -172,7 +174,6 @@ export function reset_rk_results()
     /**
      * Resets all the values stored for the RK analysis in preparation for the next one.
      */
-    //TODO: Test that the reset function works.
 
     time_current = 0;
 
@@ -201,5 +202,4 @@ export function reset_rk_results()
     psi.splice(0, psi.length);
     psid.splice(0, psid.length);
     psidd.splice(0, psidd.length);
-    console.log (time, theta);
 }
