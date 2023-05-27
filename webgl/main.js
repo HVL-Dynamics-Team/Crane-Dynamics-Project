@@ -4,8 +4,10 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import { LineController, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js';
-import {time, theta, phi, psi} from "./physics/crane_variables"
-import {runge_kutta} from "./physics/Runge_Kutta";
+import {time, theta, phi, psi, g, T1, T2, T3, m1, m2, m3, a, b, c, h, l1, l2, r1, r2, r3, target_time, dt, thetad_max, phid_max, psid_max} from "./physics/crane_variables"
+import {set_torque, set_mass, set_a, set_b, set_c, set_h, set_l1, set_l2, set_g, set_r1, set_r2, set_r3, set_target_time, set_dt, 
+        set_thetad_max, set_phid_max, set_psid_max, reset_crane_varibles_to_default} from "./physics/crane_variables";
+import {runge_kutta, reset_rk_results} from "./physics/Runge_Kutta";
 import {Reaction_Forces_inertial} from "./physics/Reaction_Forces";
 
 // Define variables for determining if the animations should run and at what stage it's running
@@ -18,6 +20,95 @@ const startBtn = document.getElementById("button_start");
 const pauseBtn = document.getElementById("button_pause");
 const resetBtn = document.getElementById("button_reset");
 const simulationSettingsBtn = document.getElementById("button_simulation_settings");
+
+// Make the pop-up page for the simulation settings.
+const settingsDiv = document.createElement("div");
+settingsDiv.id = "settings_panel";
+
+// Motor control (torque and max velocity)
+const settings_motors = document.createElement("div");
+settings_motors.id = "settings_motors";
+
+const settings_motor1 = document.createElement("div");
+settings_motor1.id = "settings_motor1";
+const settings_motor1_header = document.createElement("h3");
+settings_motor1_header.innerHTML = "Motor 1";
+settings_motor1.appendChild(settings_motor1_header);
+const settings_motor1_currenttorque = document.createElement("h4");
+settings_motor1_currenttorque.innerHTML = "Current torque: " + T1 + " [Nm]";
+settings_motor1.appendChild(settings_motor1_currenttorque);
+const settings_motor1_newtorque = document.createElement("input");
+settings_motor1_newtorque.type = "text";
+settings_motor1_newtorque.placeholder = "new torque [Nm]";
+settings_motor1.appendChild(settings_motor1_newtorque);
+settings_motors.appendChild(settings_motor1);
+
+const settings_motor2 = document.createElement("div");
+settings_motor2.id = "settings_motor2";
+settings_motors.appendChild(settings_motor2);
+
+const settings_motor3 = document.createElement("div");
+settings_motor3.id = "settings_motor3";
+settings_motors.appendChild(settings_motor3);
+
+settingsDiv.appendChild(settings_motors);
+
+// Time control
+
+// Dimensions
+
+// Masses
+
+// Gravity control
+
+// Update fields in settings
+function update_settings ()
+{
+    // Update motors current torque
+    settings_motor1_currenttorque.innerHTML = "Current torque: " + T1 + " [Nm]";
+}
+
+function clear_settings_fields ()
+{
+    // Clear motor text fields
+    try {
+        let new_T1 = parseFloat(settings_motor1_newtorque.value);
+        set_torque()
+    } catch (error) {
+        alert("Value inserted into one or more of 'Motor new torque' field(s) was not accepted!");
+    }
+    settings_motor1_newtorque.value = "";
+}
+
+// Buttons for applying settings and closing settings page.
+const settings_close_and_apply = document.createElement("form");
+settings_close_and_apply.action = "";
+settings_close_and_apply.id = "settings_apply_and_close";
+
+const settings_apply = document.createElement("input");
+settings_apply.type = "button";
+settings_apply.id = "settings_apply";
+settings_apply.value = "Apply";
+settings_apply.addEventListener("click", function() {
+    update_settings();
+    clear_settings_fields();
+});
+
+const settings_close = document.createElement("input");
+settings_close.type = "button";
+settings_close.id = "settings_close";
+settings_close.value = "Close";
+settings_close.addEventListener("click", function() {
+    document.getElementById("settings_panel_container").removeChild(settingsDiv);
+    startBtn.disabled = "";
+    pauseBtn.disabled = "";
+    resetBtn.disabled = "disabled";
+});
+
+settings_close_and_apply.appendChild(settings_apply);
+settings_close_and_apply.appendChild(settings_close);
+
+settingsDiv.appendChild(settings_close_and_apply);
 
 
 // Add eventlistener for start button.
@@ -56,7 +147,10 @@ resetBtn.addEventListener("click", function() {
 });
 
 simulationSettingsBtn.addEventListener("click", function() {
-
+    startBtn.disabled = "disabled";
+    pauseBtn.disabled = "disabled";
+    resetBtn.disabled = "disabled";
+    document.getElementById("settings_panel_container").appendChild(settingsDiv);
 });
 
 // Create the scene

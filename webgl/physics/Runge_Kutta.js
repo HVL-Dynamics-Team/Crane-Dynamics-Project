@@ -160,7 +160,7 @@ export function runge_kutta() {
     */
 }
 
-function reset_rk_results()
+export function reset_rk_results()
 {
     /**
      * Resets all the values stored for the RK analysis in preparation for the next one.

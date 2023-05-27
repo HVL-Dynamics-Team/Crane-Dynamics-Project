@@ -1,3 +1,8 @@
+body {
+    min-height: 720px;
+    min-width: 720px;
+}
+
 .controlpanel {
     border: 1px solid black;
     padding: 10px;
@@ -15,3 +20,72 @@
 #animation_container {
     padding-top: 20px;
 }
+
+#settings_panel {
+    z-index: 100000000;
+    top: 2%;
+    left: 2%;
+    width: 96%;
+    height: 96%;
+    min-width: 360px;
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color: whitesmoke;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+}
+
+#settings_panel #settings_motors {
+    display: flex;
+    flex-direction: row;
+}
+
+#settings_panel #settings_motors input {
+    padding: 8px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+#settings_panel #settings_motors div {
+    margin-left: 3px;
+    margin-right: 2px;
+}
+
+#settings_panel #settings_motors h3 {
+    margin-top: 5px;
+    margin-bottom: 3px;
+}
+
+#settings_panel #settings_motors h4 {
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+
+#settings_panel #settings_motors input {
+    position: relative;
+    width: 87%;
+}
+
+#settings_panel #settings_motors #settings_motor1 {
+    border: 1px solid red;
+}
+
+#settings_panel #settings_apply_and_close {
+    position: absolute;
+    max-height: 10%;
+    bottom: 1px;
+    right: 4px;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid blue;
+}
+
+#settings_panel #settings_apply_and_close input {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 15px;
+    padding: 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
