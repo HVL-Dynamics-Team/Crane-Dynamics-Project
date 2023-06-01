@@ -30,12 +30,14 @@ startBtn.addEventListener("click", function() {
         runge_kutta();
         isStartButtonPressed = true;
         startBtn.disabled = "disabled";
+        pauseBtn.disabled = "";
         stopBtn.disabled = "";
         simulationSettingsBtn.disabled = "disabled";
     }
 });
 
 // Add eventlistener for pause button
+pauseBtn.disabled = "disabled";
 pauseBtn.addEventListener("click", function() {
     if (!isPaused && isStartButtonPressed) {
         isPaused = true;
@@ -50,6 +52,7 @@ pauseBtn.addEventListener("click", function() {
 stopBtn.disabled = "disabled";
 stopBtn.addEventListener("click", function() {
     if (isStartButtonPressed) {    
+        pauseBtn.disabled = "disabled";
         stopBtn.disabled = "disabled";
         reset_positions();
         counter = 0;
