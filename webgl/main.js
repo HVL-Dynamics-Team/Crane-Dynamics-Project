@@ -3,8 +3,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';  
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import WebGL from 'three/addons/capabilities/WebGL.js';
-import { LineController, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js';
-import {time, theta, phi, psi, g, T1, T2, T3, m1, m2, m3, a, b, c, h, l1, l2, r1, r2, r3, target_time, dt, thetad_max, phid_max, psid_max} from "./physics/crane_variables"
+import Chart from 'chart.js/auto';
+import 'chart.js/auto';
+import {time, theta, phi, psi, thetad, phid, psid, thetadd, phidd, psidd, g, T1, T2, T3, m1, m2, m3, a, b, c, h, l1, l2, r1, r2, r3, target_time, dt, thetad_max, phid_max, psid_max} from "./physics/crane_variables"
 import {set_torque, set_mass, set_a, set_b, set_c, set_h, set_l1, set_l2, set_g, set_r1, set_r2, set_r3, set_target_time, set_dt, 
         set_thetad_max, set_phid_max, set_psid_max, reset_crane_varibles_to_default} from "./physics/crane_variables";
 import {runge_kutta, reset_rk_results} from "./physics/Runge_Kutta";
@@ -33,10 +34,11 @@ startBtn.addEventListener("click", function() {
         pauseBtn.disabled = "";
         stopBtn.disabled = "";
         simulationSettingsBtn.disabled = "disabled";
+        update_graphs();
     }
 });
 
-// Add eventlistener for pause button
+// Disable pause button by default before start and add eventlistener for pause button
 pauseBtn.disabled = "disabled";
 pauseBtn.addEventListener("click", function() {
     if (!isPaused && isStartButtonPressed) {
@@ -48,7 +50,7 @@ pauseBtn.addEventListener("click", function() {
     }
 });
 
-// Disable the resetbutton at first stage of login.
+// Disable the resetbutton at first stage of login and add evenlistener for stop button
 stopBtn.disabled = "disabled";
 stopBtn.addEventListener("click", function() {
     if (isStartButtonPressed) {    
@@ -62,6 +64,7 @@ stopBtn.addEventListener("click", function() {
     }
 });
 
+// Add eventlistener for settings button
 simulationSettingsBtn.addEventListener("click", function() {
     startBtn.disabled = "disabled";
     pauseBtn.disabled = "disabled";
@@ -75,6 +78,9 @@ const scene = new THREE.Scene();
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth / 1.1, window.innerHeight / 1.5 ); // Render the model at a quarter of the page size for now.
+renderer.setClearColor(0x0000ff, 0.4);
+
+// Attach renderer to the screen
 const pageAnimationContainer = document.getElementById("animation_container");
 pageAnimationContainer.appendChild( renderer.domElement );
 
@@ -98,6 +104,7 @@ pointLight2.position.set(-600, 1000, -1800);
 const pointLight3 = new THREE.PointLight(0xffffff);
 pointLight3.position.set(-1800, 1000, -600);
 
+// Add lights to the scene
 scene.add(pointLight1);
 scene.add(pointLight2);
 scene.add(pointLight3);
@@ -125,7 +132,7 @@ points_csysz.push( new THREE.Vector3(0, 0, -500) );
 const geometry_csysz = new THREE.BufferGeometry().setFromPoints( points_csysz );
 const line_csysz = new THREE.Line( geometry_csysz, material_csysz );
 
-renderer.setClearColor(0x0000ff, 0.4);
+// Add coordinate system to the scene
 scene.add( line_csysx );
 scene.add( line_csysy );
 scene.add( line_csysz );
@@ -195,6 +202,230 @@ body3.position.z = -30;
 // Add parts to scene
 scene.add(base);
 
+
+/**
+ * Setup for the charts using the chartjs library.
+ */
+
+// Round time table to 2 decimal places.
+var time_show = time.map(function(each_element){
+    return Number(each_element.toFixed(2));
+});
+
+// Angles chart.
+const anglesChartCanvas = document.createElement("canvas");
+anglesChartCanvas.id = "chart_angles";
+var angleChartData = {
+    labels: time_show,
+    datasets: [
+        {
+            label: 'Theta',
+            data: theta,
+            borderColor: 'rgb(10, 252, 252)'
+        }, 
+        {
+            label: 'Phi',
+            data: phi,
+            borderColor: 'rgb(252, 10, 10)'
+        },
+        {
+            label: 'Psi',
+            data: psi,
+            borderColor: 'rgb(10, 252, 10)'
+        }
+    ]
+};
+var angleChartConfig = {
+    type: 'line',
+    data: angleChartData,
+    options: {
+        plugins: {
+            decimation: {
+                enabled: false,
+                algorithm: 'min-max',
+            },
+            title: {
+                display: true,
+                text: 'Angles as a function of time'
+              }
+        },
+        animation: false,
+        interaction: {
+            mode: 'index',
+            intersect: false,
+        },
+        scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: {
+                display: true,
+                align: 'center',
+                text: 'Angle [rad]'
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+      
+              // grid line settings
+              grid: {
+                drawOnChartArea: false, // only want the grid lines for one axis to show up
+              },
+            },
+            x: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    align: 'center',
+                    text: 'Time [s]'
+                }
+            }
+          }
+    }
+};
+const anglesChart = new Chart(anglesChartCanvas, angleChartConfig);
+document.getElementsByTagName('body')[0].appendChild(anglesChartCanvas);
+
+
+// Velocity chart.
+const velocityChartCanvas = document.createElement("canvas");
+velocityChartCanvas.id = "chart_velocity";
+var velocityChartData = {
+    labels: time_show,
+    datasets: [
+        {
+            label: 'Theta-dot',
+            data: thetad,
+            borderColor: 'rgb(10, 252, 252)'
+        }, 
+        {
+            label: 'Phi-dot',
+            data: phid,
+            borderColor: 'rgb(252, 10, 10)'
+        },
+        {
+            label: 'Psi-dot',
+            data: psid,
+            borderColor: 'rgb(10, 252, 10)'
+        }
+    ]
+};
+var velocityChartConfig = {
+    type: 'line',
+    data: velocityChartData,
+    options: {
+        plugins: {
+            decimation: {
+                enabled: false,
+                algorithm: 'min-max',
+            },
+            title: {
+                display: true,
+                text: 'Velocity as a function of time'
+              }
+        },
+        animation: false,
+        scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: {
+                display: true,
+                align: 'center',
+                text: 'Angular velocity [rad/s]'
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+      
+              // grid line settings
+              grid: {
+                drawOnChartArea: false, // only want the grid lines for one axis to show up
+              },
+            },
+            x: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    align: 'center',
+                    text: 'Time [s]'
+                }
+            }
+          }
+    }
+};
+const velocityChart = new Chart(velocityChartCanvas, velocityChartConfig);
+document.getElementsByTagName('body')[0].appendChild(velocityChartCanvas);
+
+// Reaction forces in the base graphs.
+
+function update_graphs ()
+{
+    time_show = time.map(function(each_element){
+        return Number(each_element.toFixed(2));
+    });
+
+    anglesChart.data.labels = time_show;
+    anglesChart.data.datasets = [
+        {
+            label: 'Theta',
+            data: theta,
+            borderColor: 'rgb(10, 252, 252)'
+        }, 
+        {
+            label: 'Phi',
+            data: phi,
+            borderColor: 'rgb(252, 10, 10)'
+        },
+        {
+            label: 'Psi',
+            data: psi,
+            borderColor: 'rgb(10, 252, 10)'
+        }
+    ];
+    anglesChart.update();
+
+    velocityChart.data.labels = time_show;
+    velocityChart.data.datasets = [
+        {
+            label: 'Theta-dot',
+            data: thetad,
+            borderColor: 'rgb(10, 252, 252)'
+        }, 
+        {
+            label: 'Phi-dot',
+            data: phid,
+            borderColor: 'rgb(252, 10, 10)'
+        },
+        {
+            label: 'Psi-dot',
+            data: psid,
+            borderColor: 'rgb(10, 252, 10)'
+        }
+    ];
+    velocityChart.update();
+}
+
+// Check that WebGL is available for the browser and start animating the 3D model and charts.
+if ( WebGL.isWebGLAvailable() )
+{
+    animate();
+}
+else
+{
+    alert("Error in loading WebGL. Please check that your browser supports WebGL!");
+}
+
 function animate()
 {
     requestAnimationFrame( animate );
@@ -225,12 +456,3 @@ function reset_positions()
     body3.rotation.z = 0;
 }
 
-// Check that WebGL is available for the browser and start animating the 3D model.
-if ( WebGL.isWebGLAvailable() )
-{
-    animate();
-}
-else
-{
-    alert("Error in loading WebGL. Please check that your browser supports WebGL!");
-}
