@@ -330,6 +330,10 @@ var velocityChartConfig = {
               }
         },
         animation: false,
+        interaction: {
+            mode: 'index',
+            intersect: false,
+        },
         scales: {
             y: {
               type: 'linear',
